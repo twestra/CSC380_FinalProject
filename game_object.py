@@ -1,5 +1,5 @@
 import arcade
-import game_data as gd
+import game_data_mod1 as gd
 import game_core as gc
 
 

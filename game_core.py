@@ -1,6 +1,6 @@
 import arcade
 import game_object as gobj
-import game_data as gd
+import game_data_mod1 as gd
 import pyglet
 import timeit
 from datetime import datetime
@@ -416,7 +416,7 @@ class GameMain(arcade.Window):
                 return False
 
     # MAIN INPUT PROCESSING METHOD
-    def on_key_press(self, key, key_modifiers):
+    def on_key_press(self, key, key_modifiers = None):
         """
         For a full list of keys, see: http://arcade.academy/arcade.key.html
         """
