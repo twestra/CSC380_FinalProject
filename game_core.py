@@ -1,6 +1,6 @@
 import arcade
 import game_object as gobj
-import game_data_mod1 as gd
+import game_data as gd
 import pyglet
 import timeit
 from datetime import datetime
