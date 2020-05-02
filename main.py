@@ -44,7 +44,7 @@ class Agent(threading.Thread):
         #T is amount of iterations we'll do at most
         self.T = 20
         #This is the chance our input will fail; assume the move made will be random
-        self.noise = .01
+        self.noise = 0
         #Decay
         self.decay = .95
         #Epsilon is the smallest number before we say that we have converged
@@ -177,7 +177,7 @@ class Agent(threading.Thread):
             if c<17 and (self.move_grid[r][c] != 6 or (self.move_grid[r+1][c] in (2, 3, 4, 5, 6))):
                 moveJumpRight = self.value_grid[r][c+2]
             #Jump Left
-            if c>2 and (self.move_grid[r][c] != 6 or (self.move_grid[r+1][c] in (2, 3, 4, 5, 6))):
+            if c>1 and (self.move_grid[r][c] != 6 or (self.move_grid[r+1][c] in (2, 3, 4, 5, 6))):
                 moveJumpLeft = self.value_grid[r][c-2]
         return moveUp, moveRight, moveDown, moveLeft, moveJumpRight, moveJumpLeft
         
@@ -209,92 +209,104 @@ class Agent(threading.Thread):
                     #0 = North
                     self.Q_grid[r][c][0] = 0.0
                     if moveUp != -1:
-                        self.Q_grid[r][c][0] += (probC * (self.livingreward + self.decay * moveUp))
+                        self.Q_grid[r][c][0] += (probC * (self.decay * moveUp))
+                    elif moveUp == -1:
+                        self.Q_grid[r][c][0] += self.livingreward
                     if moveRight != -1:
-                        self.Q_grid[r][c][0] += (probW * (self.livingreward + self.decay * moveRight))
+                        self.Q_grid[r][c][0] += (probW * (self.decay * moveRight))
                     if moveDown != -1:
-                        self.Q_grid[r][c][0] += (probW * (self.livingreward + self.decay * moveDown))
+                        self.Q_grid[r][c][0] += (probW * (self.decay * moveDown))
                     if moveLeft != -1:
-                        self.Q_grid[r][c][0] += (probW * (self.livingreward + self.decay * moveLeft))
+                        self.Q_grid[r][c][0] += (probW * (self.decay * moveLeft))
                     if moveJumpRight != -1:
-                        self.Q_grid[r][c][0] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                        self.Q_grid[r][c][0] += (probW * (self.decay * moveJumpRight))
                     if moveJumpLeft != -1:
-                        self.Q_grid[r][c][0] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                        self.Q_grid[r][c][0] += (probW * (self.decay * moveJumpLeft))
                     
                     #1 = Right
                     self.Q_grid[r][c][1] = 0.0
                     if moveUp != -1:
-                        self.Q_grid[r][c][1] += (probW * (self.livingreward + self.decay * moveUp))
+                        self.Q_grid[r][c][1] += (probW * (self.decay * moveUp))
                     if moveRight != -1:
-                        self.Q_grid[r][c][1] += (probC * (self.livingreward + self.decay * moveRight))
+                        self.Q_grid[r][c][1] += (probC * (self.decay * moveRight))
+                    elif moveRight == -1:
+                        self.Q_grid[r][c][1] += self.livingreward
                     if moveDown != -1:
-                        self.Q_grid[r][c][1] += (probW * (self.livingreward + self.decay * moveDown))
+                        self.Q_grid[r][c][1] += (probW * (self.decay * moveDown))
                     if moveLeft != -1:
-                        self.Q_grid[r][c][1] += (probW * (self.livingreward + self.decay * moveLeft))
+                        self.Q_grid[r][c][1] += (probW * (self.decay * moveLeft))
                     if moveJumpRight != -1:
-                        self.Q_grid[r][c][1] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                        self.Q_grid[r][c][1] += (probW * (self.decay * moveJumpRight))
                     if moveJumpLeft != -1:
-                        self.Q_grid[r][c][1] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                        self.Q_grid[r][c][1] += (probW * (self.decay * moveJumpLeft))
                         
                     #2 = Down
                     self.Q_grid[r][c][2] = 0.0
                     if moveUp != -1:
-                        self.Q_grid[r][c][2] += (probW * (self.livingreward + self.decay * moveUp))
+                        self.Q_grid[r][c][2] += (probW * (self.decay * moveUp))
                     if moveRight != -1:
-                        self.Q_grid[r][c][2] += (probW * (self.livingreward + self.decay * moveRight))
+                        self.Q_grid[r][c][2] += (probW * (self.decay * moveRight))
                     if moveDown != -1:
-                        self.Q_grid[r][c][2] += (probC * (self.livingreward + self.decay * moveDown))
+                        self.Q_grid[r][c][2] += (probC * (self.decay * moveDown))
+                    elif moveDown == -1:
+                         self.Q_grid[r][c][2] += self.livingreward
                     if moveLeft != -1:
-                        self.Q_grid[r][c][2] += (probW * (self.livingreward + self.decay * moveLeft))
+                        self.Q_grid[r][c][2] += (probW * (self.decay * moveLeft))
                     if moveJumpRight != -1:
-                        self.Q_grid[r][c][2] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                        self.Q_grid[r][c][2] += (probW * (self.decay * moveJumpRight))
                     if moveJumpLeft != -1:
-                        self.Q_grid[r][c][2] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                        self.Q_grid[r][c][2] += (probW * (self.decay * moveJumpLeft))
                     
                     #3 = Left
                     self.Q_grid[r][c][3] = 0.0
                     if moveUp != -1:
-                        self.Q_grid[r][c][3] += (probW * (self.livingreward + self.decay * moveUp))
+                        self.Q_grid[r][c][3] += (probW * (self.decay * moveUp))
                     if moveRight != -1:
-                        self.Q_grid[r][c][3] += (probW * (self.livingreward + self.decay * moveRight))
+                        self.Q_grid[r][c][3] += (probW * (self.decay * moveRight))
                     if moveDown != -1:
-                        self.Q_grid[r][c][3] += (probW * (self.livingreward + self.decay * moveDown))
+                        self.Q_grid[r][c][3] += (probW * (self.decay * moveDown))
                     if moveLeft != -1:
-                        self.Q_grid[r][c][3] += (probC * (self.livingreward + self.decay * moveLeft))
+                        self.Q_grid[r][c][3] += (probC * (self.decay * moveLeft))
+                    elif moveLeft == -1:
+                        self.Q_grid[r][c][3] += self.livingreward
                     if moveJumpRight != -1:
-                        self.Q_grid[r][c][3] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                        self.Q_grid[r][c][3] += (probW * (self.decay * moveJumpRight))
                     if moveJumpLeft != -1:
-                        self.Q_grid[r][c][3] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                        self.Q_grid[r][c][3] += (probW * (self.decay * moveJumpLeft))
                     
                     #4 = JumpRight
                     self.Q_grid[r][c][4] = 0.0
                     if moveUp != -1:
-                        self.Q_grid[r][c][4] += (probW * (self.livingreward + self.decay * moveUp))
+                        self.Q_grid[r][c][4] += (probW * (self.decay * moveUp))
                     if moveRight != -1:
-                        self.Q_grid[r][c][4] += (probW * (self.livingreward + self.decay * moveRight))
+                        self.Q_grid[r][c][4] += (probW * (self.decay * moveRight))
                     if moveDown != -1:
-                        self.Q_grid[r][c][4] += (probW * (self.livingreward + self.decay * moveDown))
+                        self.Q_grid[r][c][4] += (probW * (self.decay * moveDown))
                     if moveLeft != -1:
-                        self.Q_grid[r][c][4] += (probW * (self.livingreward + self.decay * moveLeft))
+                        self.Q_grid[r][c][4] += (probW * (self.decay * moveLeft))
                     if moveJumpRight != -1:
-                        self.Q_grid[r][c][4] += (probC * (self.livingreward + self.decay * moveJumpRight))
+                        self.Q_grid[r][c][4] += (probC * (self.decay * moveJumpRight))
+                    elif moveJumpRight == -1:
+                        self.Q_grid[r][c][4] += self.livingreward
                     if moveJumpLeft != -1:
-                        self.Q_grid[r][c][4] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                        self.Q_grid[r][c][4] += (probW * (self.decay * moveJumpLeft))
                     
                     #5 = JumpLeft
                     self.Q_grid[r][c][5] = 0.0
                     if moveUp != -1:
-                        self.Q_grid[r][c][5] += (probW * (self.livingreward + self.decay * moveUp))
+                        self.Q_grid[r][c][5] += (probW * (self.decay * moveUp))
                     if moveRight != -1:
-                        self.Q_grid[r][c][5] += (probW * (self.livingreward + self.decay * moveRight))
+                        self.Q_grid[r][c][5] += (probW * (self.decay * moveRight))
                     if moveDown != -1:
-                        self.Q_grid[r][c][5] += (probW * (self.livingreward + self.decay * moveDown))
+                        self.Q_grid[r][c][5] += (probW * (self.decay * moveDown))
                     if moveLeft != -1:
-                        self.Q_grid[r][c][5] += (probW * (self.livingreward + self.decay * moveLeft))
+                        self.Q_grid[r][c][5] += (probW * (self.decay * moveLeft))
                     if moveJumpRight != -1:
-                        self.Q_grid[r][c][5] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                        self.Q_grid[r][c][5] += (probW * (self.decay * moveJumpRight))
                     if moveJumpLeft != -1:
-                        self.Q_grid[r][c][5] += (probC * (self.livingreward + self.decay * moveJumpLeft))
+                        self.Q_grid[r][c][5] += (probC * (self.decay * moveJumpLeft))
+                    elif moveJumpLeft == -1:
+                         self.Q_grid[r][c][5] +=self.livingreward
         pass
     def calc_PolicyEvaluation(self):
         for t in range (self.T):
@@ -331,97 +343,109 @@ class Agent(threading.Thread):
                         if self.policy_grid[r][c] == 0:
                             self.value_grid[r][c]= 0.0
                             if moveUp != -1:
-                                self.value_grid[r][c] += (probC * (self.livingreward + self.decay * moveUp))
+                                self.value_grid[r][c] += (probC * (self.decay * moveUp))
+                            elif moveUp == -1:
+                                self.value_grid[r][c] += self.livingreward
                             if moveRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveRight))
                             if moveDown != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveDown))
+                                self.value_grid[r][c] += (probW * (self.decay * moveDown))
                             if moveLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveLeft))
                             if moveJumpRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpRight))
                             if moveJumpLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpLeft))
                         
                         #1 = Right
                         elif self.policy_grid[r][c] == 1:
                             self.value_grid[r][c] = 0.0
                             if moveUp != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveUp))
+                                self.value_grid[r][c] += (probW * (self.decay * moveUp))
                             if moveRight != -1:
-                                self.value_grid[r][c] += (probC * (self.livingreward + self.decay * moveRight))
+                                self.value_grid[r][c] += (probC * (self.decay * moveRight))
+                            elif moveRight == -1:
+                                self.value_grid[r][c] += self.livingreward
                             if moveDown != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveDown))
+                                self.value_grid[r][c] += (probW * (self.decay * moveDown))
                             if moveLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveLeft))
                             if moveJumpRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpRight))
                             if moveJumpLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpLeft))
                             
                         #2 = Down
                         elif self.policy_grid[r][c] == 2:
                             self.value_grid[r][c] = 0.0
                             if moveUp != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveUp))
+                                self.value_grid[r][c] += (probW * (self.decay * moveUp))
                             if moveRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveRight))
                             if moveDown != -1:
-                                self.value_grid[r][c] += (probC * (self.livingreward + self.decay * moveDown))
+                                self.value_grid[r][c] += (probC * (self.decay * moveDown))
+                            elif moveDown == -1:
+                                self.value_grid[r][c] += self.livingreward
                             if moveLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveLeft))
                             if moveJumpRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpRight))
                             if moveJumpLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpLeft))
                         
                         #3 = Left
                         elif self.policy_grid[r][c] == 3:
                             self.value_grid[r][c] = 0.0
                             if moveUp != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveUp))
+                                self.value_grid[r][c] += (probW * (self.decay * moveUp))
                             if moveRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveRight))
                             if moveDown != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveDown))
+                                self.value_grid[r][c] += (probW * (self.decay * moveDown))
                             if moveLeft != -1:
-                                self.value_grid[r][c] += (probC * (self.livingreward + self.decay * moveLeft))
+                                self.value_grid[r][c] += (probC * (self.decay * moveLeft))
+                            elif moveLeft == -1:
+                                self.value_grid[r][c] += self.livingreward
                             if moveJumpRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpRight))
                             if moveJumpLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpLeft))
                         
                         #4 = JumpRight
                         elif self.policy_grid[r][c] == 4:
                             self.value_grid[r][c] = 0.0
                             if moveUp != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveUp))
+                                self.value_grid[r][c] += (probW * (self.decay * moveUp))
                             if moveRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveRight))
                             if moveDown != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveDown))
+                                self.value_grid[r][c] += (probW * (self.decay * moveDown))
                             if moveLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveLeft))
                             if moveJumpRight != -1:
-                                self.value_grid[r][c] += (probC * (self.livingreward + self.decay * moveJumpRight))
+                                self.value_grid[r][c] += (probC * (self.decay * moveJumpRight))
+                            elif moveJumpRight == -1:
+                                self.value_grid[r][c] += self.livingreward
                             if moveJumpLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpLeft))
                         
                         #5 = JumpLeft
                         elif self.policy_grid[r][c] == 5:
                             self.value_grid[r][c] = 0.0
                             if moveUp != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveUp))
+                                self.value_grid[r][c] += (probW * (self.decay * moveUp))
                             if moveRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveRight))
                             if moveDown != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveDown))
+                                self.value_grid[r][c] += (probW * (self.decay * moveDown))
                             if moveLeft != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveLeft))
+                                self.value_grid[r][c] += (probW * (self.decay * moveLeft))
                             if moveJumpRight != -1:
-                                self.value_grid[r][c] += (probW * (self.livingreward + self.decay * moveJumpRight))
+                                self.value_grid[r][c] += (probW * (self.decay * moveJumpRight))
                             if moveJumpLeft != -1:
-                                self.value_grid[r][c] += (probC * (self.livingreward + self.decay * moveJumpLeft))
+                                self.value_grid[r][c] += (probC * (self.decay * moveJumpLeft))
+                            elif moveJumpLeft == -1:
+                                self.value_grid[r][c] += self.livingreward
             if np.sum(np.abs(np.subtract(v_old, self.value_grid))) < self.epsilon:
                 break
         pass
@@ -451,70 +475,101 @@ class Agent(threading.Thread):
     def update_mdpGrid(self):
         #make our move grid for this round
         #0 means  we can't move there, 1 means we can move there, 2 means we die there or have reward there
-        G = [[0 for x in range(20)] for y in range(12)]
+        G = [[-1 for x in range(20)] for y in range(12)]
         dirtygrid = [[True for x in range(20)] for y in range(12)]
+        
         for r in range(12):
             for c in range(20):
-                if(self.move_grid[r][c] in (2, 3, 4, 5)):
-                    #i.e. if the spot is a platform, we can't be there
-                    G[r][c] = 0
-                    self.reward_grid[r][c] = 0
-                if(self.move_grid[r][c] == (6)):
-                    G[r][c] = 1
-                if self.move_grid[r][c] == 1:
-                    if c == 19:
-                        #we can't access the last column in the grid
+                if(G[r][c] == -1):
+                    if(self.move_grid[r][c] in (2, 3, 4, 5)):
+                        #i.e. if the spot is a platform, we can't be there
                         G[r][c] = 0
                         self.reward_grid[r][c] = 0
-                    if r<11: #don't want to access out of bounds by accident
-                        if (self.move_grid[r+1][c] not in (2, 3, 4, 5, 6)):
-                            #we can't access spaces that don't have a platform below them(we can sometimes but we will overwrite this later)
+                    if(self.move_grid[r][c] == (6)):
+                        G[r][c] = 1
+                    if self.move_grid[r][c] == 1:
+                        if c == 19:
+                            #we can't access the last column in the grid
                             G[r][c] = 0
                             self.reward_grid[r][c] = 0
+                        if r<11: #don't want to access out of bounds by accident
+                            if (self.move_grid[r+1][c] not in (2, 3, 4, 5, 6)):
+                                #we can't access spaces that don't have a platform below them(we can sometimes but we will overwrite this later)
+                                G[r][c] = 0
+                                self.reward_grid[r][c] = 0
+                            else:
+                                G[r][c] = 1
+                                self.reward_grid[r][c] = 0
+                    if (self.move_grid[r][c] in (8, 9, 10)):
+                        #this is a reward state
+                        if self.game.plat_grid[r][c].isActive:
+                            G[r][c] = 2
+                            if self.move_grid[r][c] == 8:
+                                self.reward_grid[r][c] = 1
+                            elif self.move_grid[r][c] == 9:
+                                self.reward_grid[r][c] = 3
+                            elif self.move_grid[r][c] == 10:
+                                self.reward_grid[r][c] = 6
                         else:
                             G[r][c] = 1
                             self.reward_grid[r][c] = 0
-                if (self.move_grid[r][c] in (8, 9, 10)):
-                    #this is a reward state
-                    if self.game.plat_grid[r][c].isActive:
-                        G[r][c] = 2
-                        if self.move_grid[r][c] == 8:
-                            self.reward_grid[r][c] = 1
-                        elif self.move_grid[r][c] == 9:
-                            self.reward_grid[r][c] = 3
-                        elif self.move_grid[r][c] == 10:
-                            self.reward_grid[r][c] = 6
-                    else:
+                    #This is for the snakes
+                    if self.move_grid[r][c] == 11:
                         G[r][c] = 1
                         self.reward_grid[r][c] = 0
-                if self.kill_grid[r][c]:
-                    #if we are going to die in this spot it's a terminal spot
-                    G[r][c] = 2
-                    #################SUBJECT TO CHANGE###########################
-                    self.reward_grid[r][c] = -10
-                    #############################################################
-                if self.move_grid[r][c] == 1:
-                    #is this spot below also air?
-                    if r<11: #don't want to access out of bounds by accident
-                        if (self.move_grid[r+1][c] not in (2, 3, 4, 5, 6)):
-                            #is there a platform within walking or jumping distance (can we somehow move to this position and fall)
-                            # Do checks for out of bounds, and then assign a terminal state to death spots
-                            if c > 0:
-                                if (self.move_grid[r+1][c-1] in (2, 3, 4, 5)):
-                                    G[r][c] = 2
-                                    self.reward_grid[r][c] = -5
-                                if c>1:
-                                    if (self.move_grid[r+1][c-2] in (2, 3, 4, 5)):
+#                    if self.kill_grid[r][c]:
+#                        #if we are going to die in this spot it's a terminal spot
+#                        G[r][c] = 2
+#                        #################SUBJECT TO CHANGE###########################
+#                        if self.move_grid[r][c] == 7:
+#                            self.reward_grid[r][c] = -10
+#                        #############################################################
+#                        else:
+#                            if c>0:
+#                                self.reward_grid[r][c-1] = -5
+#                                G[r][c-1] == 2
+#                            if c<19:
+#                                self.reward_grid[r][c+1] = -5
+#                                G[r][c+1] = 2
+#                            self.reward_grid[r][c] = -10
+                    if self.move_grid[r][c] == 7:
+                        G[r][c] = 2
+                        self.reward_grid[r][c] = -5
+                    for enemy in self.game.enemy_list:
+                        if(enemy.isActive):
+                            row, column = enemy.get_gridRC()
+                            G[row][column] = 2
+                            self.reward_grid[row][column] = -10
+                            if enemy.isGoingLeft and c>0:
+                                if self.tanuki_c != column-1 or self.tanuki_r != row:
+                                    G[row][column-1] = 2
+                                    self.reward_grid[row][column-1] = -.5
+                            elif not enemy.isGoingLeft and c<19:
+                                if self.tanuki_c != column+1 or self.tanuki_r != row:
+                                    G[row][column+1] = 2
+                                    self.reward_grid[row][column+1] = -.5
+                    if self.move_grid[r][c] == 1:
+                        #is this spot below also air?
+                        if r<11: #don't want to access out of bounds by accident
+                            if (self.move_grid[r+1][c] not in (2, 3, 4, 5, 6)):
+                                #is there a platform within walking or jumping distance (can we somehow move to this position and fall)
+                                # Do checks for out of bounds, and then assign a terminal state to death spots
+                                if c > 0:
+                                    if (self.move_grid[r+1][c-1] in (2, 3, 4, 5)):
                                         G[r][c] = 2
                                         self.reward_grid[r][c] = -5
-                            if c<19:
-                                if (self.move_grid[r+1][c+1] in (2, 3, 4, 5)):
-                                    G[r][c] = 2
-                                    self.reward_grid[r][c] = -5
-                                if c<18:
-                                    if (self.move_grid[r+1][c+2] in (2, 3, 4, 5)):
+                                    if c>1:
+                                        if (self.move_grid[r+1][c-2] in (2, 3, 4, 5)):
+                                            G[r][c] = 2
+                                            self.reward_grid[r][c] = -5
+                                if c<19:
+                                    if (self.move_grid[r+1][c+1] in (2, 3, 4, 5)):
                                         G[r][c] = 2
                                         self.reward_grid[r][c] = -5
+                                    if c<18:
+                                        if (self.move_grid[r+1][c+2] in (2, 3, 4, 5)):
+                                            G[r][c] = 2
+                                            self.reward_grid[r][c] = -5
 
         
         #Now we need to check againt previous move grid and make our dirty grid, and also update the previous_move grid with our current
@@ -596,25 +651,28 @@ class Agent(threading.Thread):
     def ai_function(self):
         # To send a key stroke to the game, use self.game.on_key_press() method
         #self.bfs(self.move_grid, self.tanuki_r, self.tanuki_c, 8)
+        start_time = time.time()
         self.update_mdpGrid()
         self.doPolicyIteration()
-#        print("Policy Grid:")
-#        pprint(self.policy_grid)
-#        print("Value Grid:")
-#        for x in range(12):
-#            print("")
-#            for y in range(20):
-#                print("{:.2f}".format(self.value_grid[x][y]), end = ", ")
-#        print("Q-Value Grid:")
-#        for x in range(12):
-#            print("")
-#            for y in range(20):
-#                print("[", end = "")
-#                for z in range(6):
-#                    print("{:.2f}".format(self.Q_grid[x][y][z]), end = ", ")
-#                print("], ", end = "")
+        print("Policy Grid:")
+        pprint(self.policy_grid)
+        print("Value Grid:")
+        for x in range(12):
+            print("")
+            for y in range(20):
+                print("{:.2f}".format(self.value_grid[x][y]), end = ", ")
+        print("Q-Value Grid:")
+        for x in range(12):
+            print("")
+            for y in range(20):
+                print("[", end = "")
+                for z in range(6):
+                    print("{:.2f}".format(self.Q_grid[x][y][z]), end = ", ")
+                print("], ", end = "")
 #            print
         self.performStep()
+        total_time = time.time() - start_time
+        #print(f"Total time is: {total_time}")
         return
 
     def run(self):
@@ -654,7 +712,7 @@ class Agent(threading.Thread):
                 = self.game.get_game_state()
             
             self.ai_function()
-            time.sleep(.075)
+            time.sleep(.05)
             #print(self.kill_grid)
             # Display grid information (can be turned off if performance issue exists)
             if self.show_grid_info:
